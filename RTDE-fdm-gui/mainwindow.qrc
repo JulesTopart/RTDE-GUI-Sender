@@ -1,0 +1,9 @@
+<RCC>
+  <qresource prefix="MainWindow">
+    <file>res/folder.png</file>
+    <file>res/pause.png</file>
+    <file>res/play-button.png</file>
+    <file>res/stop.png</file>
+    <file>qss/VisualScript.qss</file>
+  </qresource>
+</RCC>

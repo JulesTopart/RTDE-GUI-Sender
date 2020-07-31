@@ -1,0 +1,85 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="mainwindow.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>stdafx</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp" />
+    <ClCompile Include="socket.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="irtde.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="thermo.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="console.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="interpreter.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="header">
+      <UniqueIdentifier>{c3a9dc37-249f-4108-bfdf-ba6879f00fd5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="source">
+      <UniqueIdentifier>{8b50e738-1984-4b43-b5e7-84d354cdcfab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui">
+      <UniqueIdentifier>{37057a3a-54fd-4136-be19-584ae6eba2c2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ressource">
+      <UniqueIdentifier>{cb32d343-ce70-4871-a583-74342bcbf950}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="stdafx">
+      <UniqueIdentifier>{2e55f95c-a6cb-41e6-aa40-02dd89f607fc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>stdafx</Filter>
+    </ClInclude>
+    <ClInclude Include="irtde.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="thermo.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="socket.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="core.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="console.h">
+      <Filter>header</Filter>
+    </ClInclude>
+    <ClInclude Include="interpreter.h">
+      <Filter>header</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="mainwindow.h">
+      <Filter>header</Filter>
+    </QtMoc>
+  </ItemGroup>
+  <ItemGroup>
+    <QtUic Include="mainwindow.ui">
+      <Filter>ui</Filter>
+    </QtUic>
+    <QtUic Include="settings.ui">
+      <Filter>ui</Filter>
+    </QtUic>
+  </ItemGroup>
+  <ItemGroup>
+    <QtRcc Include="mainwindow.qrc">
+      <Filter>ressource</Filter>
+    </QtRcc>
+  </ItemGroup>
+</Project>
