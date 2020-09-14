@@ -16,6 +16,8 @@ public:
 
     void connectSignal();
     
+    void checkNetwork();
+
     void saveSettings();
     void resetSettings();
     void loadSettings();
@@ -31,17 +33,21 @@ public slots :
     void actionRunTriggered();
     void actionPauseTriggered();
     void actionStopTriggered();
-    
+
     void buttonConnectRTDEPressed();
     void buttonSendRTDEPressed();
 
     void buttonConnectTemperaturePressed();
     void buttonSendTemperaturePressed();
 
+    void spinBoxStartLineChanged();
+
 private:
 
+    QTimer* netTimer = new QTimer(this);
 
     QString currentProgram;
+    long programSize;
     QString currentRTDEIP;
 
     QString currentTempPort;
@@ -50,6 +56,8 @@ private:
     bool running = false;
     bool paused = false;
     bool stopTrigerred = false;
+
+    long firstLine;
 
     Ui::MainWindowClass ui;
 

@@ -18,6 +18,8 @@ public:
 
 	inline bool isConnected() { return _connected; };
 
+	void checkNetwork();
+
 	bool isRunning();
 
 	void setStandardDigitalOut(int pin, bool state);

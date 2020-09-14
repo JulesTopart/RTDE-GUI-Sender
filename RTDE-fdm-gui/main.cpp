@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
     File.open(QFile::ReadOnly);
     QString StyleSheet = QLatin1String(File.readAll());
 
-    app.setStyleSheet(StyleSheet);
+    //app.setStyleSheet(StyleSheet);
 
 
     w.show();

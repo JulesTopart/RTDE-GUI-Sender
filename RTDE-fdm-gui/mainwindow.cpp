@@ -15,6 +15,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connectSignal();
     loadSettings();
+
+    firstLine = 0;
 }
 
 void MainWindow::closeEvent(QCloseEvent* event){
@@ -39,6 +41,10 @@ void MainWindow::connectSignal() {
 
     connect(ui.scriptText->verticalScrollBar(), &QScrollBar::valueChanged, ui.lineText->verticalScrollBar(), &QScrollBar::setValue);
     connect(ui.lineText->verticalScrollBar(), &QScrollBar::valueChanged, ui.scriptText->verticalScrollBar(), &QScrollBar::setValue);
+
+    connect(netTimer, &QTimer::timeout, this, &MainWindow::checkNetwork);
+    netTimer->start();
+
 }
 
 void MainWindow::saveSettings() {
@@ -83,7 +89,16 @@ void MainWindow::loadSettings() {
     currentTempPort = Tport;
 }
 
+void MainWindow::checkNetwork() {
+    robot.checkNetwork();
 
+    if (!robot.isConnected()) {
+        if (running) {
+            actionPauseTriggered();
+
+        }
+    }
+}
 
 void MainWindow::actionRunTriggered() {
     if (!running) {
@@ -168,13 +183,13 @@ void MainWindow::colorLine(long n){
     if (n > 0) {
         QTextCursor tc(ui.scriptText->document()->findBlockByLineNumber(n-1));
         QTextBlockFormat blockFormat = ui.scriptText->document()->findBlockByLineNumber(n-1).blockFormat();
-        blockFormat.setBackground(Qt::gray);
+        blockFormat.setBackground(Qt::yellow);
         tc.setBlockFormat(blockFormat);
     }
 
     QTextCursor tc(ui.scriptText->document()->findBlockByLineNumber(n));
     QTextBlockFormat blockFormat = ui.scriptText->document()->findBlockByLineNumber(n).blockFormat();
-    blockFormat.setBackground(Qt::darkGray);
+    blockFormat.setBackground(Qt::green);
     tc.setBlockFormat(blockFormat);
 }
 
@@ -196,6 +211,7 @@ void MainWindow::actionOpenTriggered() {
     ui.scriptText->setText(currentProgram);
 
     long lineCount = ui.scriptText->document()->blockCount();
+    programSize = lineCount;
 
     generateLines(lineCount);
 }
@@ -217,9 +233,21 @@ void MainWindow::actionStopTriggered() {
 }
 
 void MainWindow::buttonConnectRTDEPressed() {
-    currentRTDEIP = ui.comboBoxIP_rtde->currentText();
-    Console::log("Connecting... Please wait.");
-    robot.connect(currentRTDEIP.toStdString());
+    if (!robot.isConnected()) {
+        currentRTDEIP = ui.comboBoxIP_rtde->currentText();
+        Console::log("Connecting... Please wait.");
+        QApplication::setOverrideCursor(Qt::WaitCursor);
+        robot.connect(currentRTDEIP.toStdString());
+        if (robot.isConnected()) {
+            ui.status_rtde->setText("Online");
+            ui.status_rtde->setStyleSheet("color : green;");
+        }
+        else {
+            ui.status_rtde->setText("Offline");
+            ui.status_rtde->setStyleSheet("color : red;");
+        }
+        QApplication::restoreOverrideCursor();
+    }
 }
 
 void MainWindow::buttonSendRTDEPressed() {
@@ -241,5 +269,13 @@ void MainWindow::buttonSendTemperaturePressed() {
 
 }
 
+
+void MainWindow::spinBoxStartLineChanged() {
+    firstLine = ui.startLineSpinBox->value();
+
+    if (firstLine > programSize) firstLine = programSize - 1;
+
+
+}
 
 

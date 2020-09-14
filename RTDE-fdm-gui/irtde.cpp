@@ -24,7 +24,17 @@ bool UrRobot::connect(std::string ip){
 }
 
 void UrRobot::disconnect(){
+
 	_connected = false;
+}
+
+void UrRobot::checkNetwork() {
+	if (rtde_control->isConnected()) {
+		_connected = true;
+	}
+	else {
+		_connected = false;
+	}
 }
 
 bool UrRobot::isRunning(){
