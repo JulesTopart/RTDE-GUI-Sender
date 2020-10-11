@@ -23,6 +23,12 @@
     <ClCompile Include="interpreter.cpp">
       <Filter>source</Filter>
     </ClCompile>
+    <ClCompile Include="Program.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
+    <ClCompile Include="loadingMsg.cpp">
+      <Filter>source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="header">
@@ -68,12 +74,18 @@
     <QtMoc Include="mainwindow.h">
       <Filter>header</Filter>
     </QtMoc>
+    <QtMoc Include="Program.h">
+      <Filter>header</Filter>
+    </QtMoc>
+    <QtMoc Include="loadingMsg.h">
+      <Filter>header</Filter>
+    </QtMoc>
   </ItemGroup>
   <ItemGroup>
     <QtUic Include="mainwindow.ui">
       <Filter>ui</Filter>
     </QtUic>
-    <QtUic Include="settings.ui">
+    <QtUic Include="loading.ui">
       <Filter>ui</Filter>
     </QtUic>
   </ItemGroup>

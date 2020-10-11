@@ -1,11 +1,15 @@
 #pragma once
 
 #include <QtWidgets/QMainWindow>
+
 #include "ui_mainwindow.h"
 #include "console.h"
 #include "irtde.h"
-#include "interpreter.h"
+#include "Program.h"
 
+constexpr auto CHUNK_SIZE = 100;
+
+typedef QVector<QString> TextChunk;
 
 class MainWindow : public QMainWindow
 {
@@ -16,23 +20,31 @@ public:
 
     void connectSignal();
     
-    void checkNetwork();
+    void updateGUI();
 
     void saveSettings();
     void resetSettings();
     void loadSettings();
+    void compile();
 
-    void colorLine(long count);
-    void generateLines(long count);
-    void executeLine(Operation op);
+    void showChunk(long lineNumber);
+    void colorLine(long n, int r, int g, int b);
+    void generateLines(long start, long end);
 
     void closeEvent(QCloseEvent* e);
+
+    void resetRobot();
+    void connectRobot();
+    void disconnectRobot();
 
 public slots :
     void actionOpenTriggered();
     void actionRunTriggered();
     void actionPauseTriggered();
     void actionStopTriggered();
+
+    void actionEnableTemperatureTrigerred();
+    void actionEnableConsoleTrigerred();
 
     void buttonConnectRTDEPressed();
     void buttonSendRTDEPressed();
@@ -44,22 +56,23 @@ public slots :
 
 private:
 
-    QTimer* netTimer = new QTimer(this);
+    //Executer
 
-    QString currentProgram;
-    long programSize;
+    QTimer* netTimer;
+
+    QVector<QString> script;
+    Program program;
+
+    long currentChunk = 0;
+    QVector<TextChunk> chunks;
+
+    //Network
+
     QString currentRTDEIP;
 
     QString currentTempPort;
     QString currentTempIP;
 
-    bool running = false;
-    bool paused = false;
-    bool stopTrigerred = false;
-
-    long firstLine;
-
     Ui::MainWindowClass ui;
 
-    UrRobot robot;
 };

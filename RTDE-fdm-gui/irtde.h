@@ -11,29 +11,26 @@ using namespace ur_rtde;
 
 class UrRobot {
 public:
-	UrRobot();
 
-	bool connect(std::string);
-	void disconnect();
+	static bool connect(std::string);
+	static void disconnect();
 
-	inline bool isConnected() { return _connected; };
+	static inline bool isConnected() { return _connected; };
 
-	void checkNetwork();
+	static void checkNetwork();
 
-	bool isRunning();
+	static bool isRunning();
 
-	void setStandardDigitalOut(int pin, bool state);
-	void setAnalogOutputCurrent(int pin, double value);
-	void moveJ(std::vector<double> axis, double accel, double speed, int x1=0, int x2=0);
-	void moveL(std::vector<double> axis, double accel, double speed, int x1=0, int x2=0);
+	static void setStandardDigitalOut(int pin, bool state);
+	static void setAnalogOutputVoltage(int pin, double value);
+	static void moveJ(std::vector<double> axis, double speed, double accel, int x1=0, int x2=0);
+	static void moveL(std::vector<double> axis, double speed, double accel, int x1=0, int x2=0);
+	static void servoC(std::vector<double> axis, double speed, double accel, int x1 = 0, int x2 = 0);
 
-	void testCircle();
+	static void testCircle();
 
 private:
-	RTDEControlInterface* rtde_control;
-	RTDEIOInterface* rtde_io;
-
-	bool _connected = false;
-
-	//RTDEReceiveInterface* rtde_receive;
+	static RTDEControlInterface* rtde_control;
+	static RTDEIOInterface* rtde_io;
+	static bool _connected;
 };

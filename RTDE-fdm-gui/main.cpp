@@ -9,11 +9,8 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
     MainWindow w;
 
-    QFile File(":/MainWindow/qss/VisualScript.qss");
-    File.open(QFile::ReadOnly);
-    QString StyleSheet = QLatin1String(File.readAll());
-
-    //app.setStyleSheet(StyleSheet);
+    qDebug() << QStyleFactory::keys();
+    app.setStyle(QStyleFactory::create("Fusion"));
 
 
     w.show();

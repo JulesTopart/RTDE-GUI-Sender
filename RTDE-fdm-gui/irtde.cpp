@@ -3,9 +3,9 @@
 
 using namespace ur_rtde;
 
-UrRobot::UrRobot() {
-	rtde_control = nullptr;
-};
+RTDEControlInterface* UrRobot::rtde_control = nullptr;
+RTDEIOInterface* UrRobot::rtde_io = nullptr;
+bool UrRobot::_connected = false;
 
 bool UrRobot::connect(std::string ip){
 	try{
@@ -18,23 +18,29 @@ bool UrRobot::connect(std::string ip){
 		rtde_io = nullptr;
 		return false;
 	}
-	Console::log("Connected sucessfully !", "RTDE");
+	Console::success("Connected sucessfully !", "RTDE");
 	_connected = true;
 	return true;
 }
 
 void UrRobot::disconnect(){
+	delete rtde_control;
+	delete rtde_io;
+
+	rtde_control = nullptr;
+	rtde_io = nullptr;
 
 	_connected = false;
 }
 
 void UrRobot::checkNetwork() {
-	if (rtde_control->isConnected()) {
-		_connected = true;
-	}
-	else {
-		_connected = false;
-	}
+	if(isConnected())
+		if (rtde_control->isConnected()) {
+			_connected = true;
+		}
+		else {
+			_connected = false;
+		}
 }
 
 bool UrRobot::isRunning(){
@@ -45,8 +51,8 @@ bool UrRobot::isRunning(){
 
 void UrRobot::testCircle(){
 	TRY_RTDE{
-		double velocity = 0.25;
-		double acceleration = 1.2;
+		double velocity = 0.40;
+		double acceleration = 1.9;
 		double blend = 0.1;
 		std::vector<double> waypoint_1 = { -0.300, -0.300, 0.100, -2.695, 1.605, -0.036 };
 		std::vector<double> waypoint_2 = { -0.399, -0.199, 0.099, -2.694, 1.606, -0.037 };
@@ -74,15 +80,18 @@ void UrRobot::setStandardDigitalOut(int pin, bool state){
 	TRY_RTDE rtde_io->setStandardDigitalOut(pin, state);
 }
 
-void UrRobot::setAnalogOutputCurrent(int pin, double value){
-	TRY_RTDE rtde_io->setAnalogOutputCurrent(pin, value);
+void UrRobot::setAnalogOutputVoltage(int pin, double value){
+	TRY_RTDE rtde_io->setAnalogOutputVoltage(pin, value);
 }
 
-void UrRobot::moveJ(std::vector<double> axis, double accel, double speed, int x1, int x2){
-	TRY_RTDE rtde_control->moveJ({ axis[0], axis[1], axis[2], axis[3], axis[4], axis[5] }, accel, speed);
+void UrRobot::moveJ(std::vector<double> axis, double speed, double accel, int x1, int x2){
+	TRY_RTDE rtde_control->moveJ({ axis[0], axis[1], axis[2], axis[3], axis[4], axis[5] }, speed, accel);
 }
 
-void UrRobot::moveL(std::vector<double> axis, double accel, double speed, int x1, int x2){
-	TRY_RTDE rtde_control->moveL({ axis[0], axis[1], axis[2], axis[3], axis[4], axis[5] }, accel, speed);
+void UrRobot::moveL(std::vector<double> axis, double speed, double accel, int x1, int x2){
+	TRY_RTDE rtde_control->moveL({ axis[0], axis[1], axis[2], axis[3], axis[4], axis[5] }, speed, accel);
 }
 
+void UrRobot::servoC(std::vector<double> axis, double speed, double accel, int x1, int x2) {
+	TRY_RTDE rtde_control->servoC({ axis[0], axis[1], axis[2], axis[3], axis[4], axis[5] }, speed, accel);
+}

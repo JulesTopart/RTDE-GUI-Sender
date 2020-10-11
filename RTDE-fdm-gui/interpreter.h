@@ -6,7 +6,8 @@
 
 enum class FunctionType {
 	COMMAND,
-	COMMENT
+	COMMENT,
+	ERROR_CODE
 };
 
 enum class ParamType {
@@ -44,7 +45,7 @@ public:
 		{ return atoiArray(buffer); }
 
 	double getDouble()
-		{ return atof(buffer.toStdString().c_str()); }
+		{ return strtod(buffer.toStdString().c_str(), NULL); }
 
 	QVector<double> getDoubleArray()
 		{ return atofArray(buffer); }
@@ -58,23 +59,22 @@ private :
 	QString buffer;
 };
 
-
-
 typedef QVector<Token> Arguments;
+
 
 class Operation {
 public:
 	Operation(QString txt, long number) {
-		setText(txt);
 		lineNumber = number;
+		setText(txt);
 	}
 
 	inline void	setText(QString txt) { buffer = txt; parseText(); }
-	inline void	setType(FunctionType t) { type	 = t;	}
+	inline void	setType(FunctionType t) { type = t; }
 
 	void parseText();
-	void parseCommand();
-	void parseArguments();
+	bool parseCommand();
+	bool parseArguments();
 
 	inline long	getLine() { return lineNumber; }
 	inline FunctionType	getType() { return type; }
@@ -102,24 +102,26 @@ private:
 };
 
 
-
 class Interpreter{
 public:
-	Interpreter() {};
 
-	inline void setText(QString txt) { buffer = txt.trimmed(); buffer.replace(" ", ""); parseText(); }
+	static void compileLine(QString src);
+	static bool isCommandValid(QString);
 
-	QVector<Operation> getProgram() { return program; }
-
-
+	inline static long errors() { return _errors; }
+	static QVector<Operation> save();
 
 private:
+	Interpreter();
+	static QVector<Operation> parseText();
+	static void newProgram();
 
-	void parseText();
+	static QVector<Operation> program;
 
-
-
-	QString buffer;
-	QVector<Operation> program;
+	static long _errors;
+	static QString buffer;
+	static bool compiling;
+	static long index;
 };
+
 

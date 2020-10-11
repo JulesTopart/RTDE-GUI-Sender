@@ -101,14 +101,14 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|Win32'" Label="QtSettings">
-    <QtInstall>Qt 5.15.0 MSVC2019 32bit</QtInstall>
-    <QtModules>core;gui;widgets;charts</QtModules>
-    <QtBuildConfig>debug</QtBuildConfig>
+    <QtInstall>Qt 5.15.0 MSVC2019 64bit</QtInstall>
+    <QtModules>core;gui;widgets;charts;network;concurrent</QtModules>
+    <QtBuildConfig>release</QtBuildConfig>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="QtSettings">
     <QtInstall>Qt 5.15.0 MSVC2019 64bit</QtInstall>
-    <QtModules>core;gui;widgets;charts</QtModules>
-    <QtBuildConfig>debug</QtBuildConfig>
+    <QtModules>core;gui;widgets;charts;network;concurrent</QtModules>
+    <QtBuildConfig>release</QtBuildConfig>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'" Label="QtSettings">
     <QtInstall>Qt 5.15.0 MSVC2019 64bit</QtInstall>
@@ -197,10 +197,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <QtRcc Include="mainwindow.qrc" />
+    <QtUic Include="loading.ui" />
     <QtUic Include="mainwindow.ui" />
     <QtMoc Include="mainwindow.h" />
     <ClCompile Include="console.cpp" />
     <ClCompile Include="interpreter.cpp" />
+    <ClCompile Include="Program.cpp" />
+    <ClCompile Include="loadingMsg.cpp" />
     <ClCompile Include="thermo.cpp" />
     <ClCompile Include="irtde.cpp" />
     <ClCompile Include="mainwindow.cpp" />
@@ -208,6 +211,8 @@
     <ClInclude Include="console.h" />
     <ClInclude Include="core.h" />
     <ClInclude Include="interpreter.h" />
+    <QtMoc Include="Program.h" />
+    <QtMoc Include="loadingMsg.h" />
     <ClInclude Include="thermo.h" />
     <ClInclude Include="irtde.h" />
     <ClInclude Include="socket.h" />
@@ -219,7 +224,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)' == 'Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <QtUic Include="settings.ui" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">

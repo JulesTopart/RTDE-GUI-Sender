@@ -1,3 +1,4 @@
+#include "irtde.h"
 #include "interpreter.h"
 
 #include <stdio.h>
@@ -5,15 +6,62 @@
 
 #include <QStringList>
 
+QString Interpreter::buffer = "";
+long Interpreter::_errors = 0;
+bool Interpreter::compiling = false;
+long Interpreter::index = 0;
+QVector<Operation> Interpreter::program;
+
+void Interpreter::newProgram(){ 
+	program.clear(); 
+	_errors = 0;
+	compiling = true;
+	index = 0;
+}
 
 
-void Interpreter::parseText(){
+bool Interpreter::isCommandValid(QString key) {
+	if(key == "setStandardDigitalOut"){
+		return true;
+	}
+	else if (key == "setAnalogOutputVoltage") {
+		return true;
+	}
+	else if (key == "moveJ") {
+		return true;
+	}
+	else if (key == "moveL") {
+		return true;
+	}
+	else if (key == "servoc") {
+		return true;
+	}
+	else {
+		_errors++;
+		return false;
+	}
+}
+
+QVector<Operation> Interpreter::save() {
+	compiling = false;
+	return program;
+}
+
+void Interpreter::compileLine(QString line){ 
+	if (compiling == false) newProgram();
+	program.push_back(Operation(line.simplified(), index++));
+}
+
+QVector<Operation> Interpreter::parseText(){
+	QVector<Operation> program;
 	QStringList lines = buffer.split("\n", QString::SkipEmptyParts);
 
 	long index = 0;
 	for each (QString line in lines){
 		program.push_back(Operation(line.simplified(), index++));
 	}
+
+	return program;
 }
 
 
@@ -26,12 +74,16 @@ void Operation::parseText() {
 	}
 
 	setType(FunctionType::COMMAND);
-	parseCommand();
+	if (!parseCommand()) {
+		setType(FunctionType::ERROR_CODE);
+	}
 	buffer = buffer.mid(command.size());
-	parseArguments();
+	if (!parseArguments()) {
+		setType(FunctionType::ERROR_CODE);
+	}
 }
 
-void Operation::parseArguments() {
+bool Operation::parseArguments() {
 
 	if (!buffer.endsWith(')')) buffer = buffer.left(buffer.indexOf(')')+1);
 	if (buffer.startsWith('(') && buffer.endsWith(')')) {
@@ -41,9 +93,15 @@ void Operation::parseArguments() {
 			chop(buffer, buf.size());
 			if (buffer[0] == ",") chop(buffer,1);
 			content.push_back(buf);
+			//Console::log(buf);
 		}
-
-	}else Console::error("Invalid argument : " + buffer, "Interpreter");
+		
+	}
+	else {
+		Console::error("Invalid argument : " + buffer, "Interpreter");
+		return false;
+	}
+	return true;
 }
 
 
@@ -70,13 +128,21 @@ ParamType Token::getType() {
 }
 
 
-void Operation::parseCommand() {
+bool Operation::parseCommand() {
 	QString name = "";
 	uint index = 0;
 	while (index < buffer.size()) {
 		if (!buffer[index].isLetter()) {
 			command = name;
-			return;
+			if (name.size() == 0) {
+				return false;
+			}
+			else {
+				if (!Interpreter::isCommandValid(name)) {
+					Console::error("at line " + QString::number(lineNumber) + " -> Invalid command : " + name);
+				}
+				return true;
+			}
 		}
 		name += buffer[index];
 		index++;
@@ -91,6 +157,8 @@ void chop(QString& buf, uint start, uint end) {
 QString readToken(QString buffer) {
 	int tokenStart = 0;
 	int tokenLenght = 0;
+
+	buffer = buffer.mid(ignoreSpaces(buffer), buffer.size());
 
 	if (buffer[0] == '[') {
 		tokenLenght = buffer.indexOf(']') - tokenStart + 1;
@@ -171,4 +239,5 @@ QVector<double> atofArray(QString buf) {
 		}
 	}
 }
+
 
