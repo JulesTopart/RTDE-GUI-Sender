@@ -3,7 +3,7 @@ This tool was made to facilitate 3D printing on an Universal robot.
 
 ## Installation
 
-Dowload the realease [here]()
+Download the final realease [here]()
 
 
 
