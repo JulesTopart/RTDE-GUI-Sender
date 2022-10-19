@@ -24,13 +24,16 @@ public:
 	static void setStandardDigitalOut(int pin, bool state);
 	static void setAnalogOutputVoltage(int pin, double value);
 	static void moveJ(std::vector<double> axis, double speed, double accel, int x1=0, int x2=0);
-	static void moveL(std::vector<double> axis, double speed, double accel, int x1=0, int x2=0);
+	static void moveL(std::vector<double> axis, double speed, double accel);
+	static void moveL(std::vector<double> axis, double speed, double accel, double blend, double extrusion, bool async);
+	static void moveP(std::vector<double> path);
 	static void servoC(std::vector<double> axis, double speed, double accel, int x1 = 0, int x2 = 0);
-
-	static void testCircle();
+	//static void moveP()
 
 private:
 	static RTDEControlInterface* rtde_control;
 	static RTDEIOInterface* rtde_io;
 	static bool _connected;
+
+	static std::vector<std::vector<double>> pathBuffer;
 };

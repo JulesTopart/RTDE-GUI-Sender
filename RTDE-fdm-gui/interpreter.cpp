@@ -98,7 +98,7 @@ bool Operation::parseArguments() {
 		
 	}
 	else {
-		Console::error("Invalid argument : " + buffer, "Interpreter");
+		Console::error("Invalid argument : " + buffer + " at line : " + QString::number(this->getLine()), "Interpreter");
 		return false;
 	}
 	return true;

@@ -29,7 +29,7 @@ void			chop			(QString& buf, uint start, uint end = -1);
 
 class Token {
 public:
-	Token(QString buf) { setText(buf); }
+	Token(QString buf = "") { setText(buf); }
 
 	void	setText(QString txt) 
 		{ buffer = txt; parseText(); }
@@ -64,7 +64,9 @@ typedef QVector<Token> Arguments;
 
 class Operation {
 public:
-	Operation(QString txt, long number) {
+
+
+	Operation(QString txt = "void", long number = 0) {
 		lineNumber = number;
 		setText(txt);
 	}

@@ -6,6 +6,7 @@ using namespace ur_rtde;
 RTDEControlInterface* UrRobot::rtde_control = nullptr;
 RTDEIOInterface* UrRobot::rtde_io = nullptr;
 bool UrRobot::_connected = false;
+std::vector<std::vector<double>> UrRobot::pathBuffer;
 
 bool UrRobot::connect(std::string ip){
 	try{
@@ -49,33 +50,6 @@ bool UrRobot::isRunning(){
 	return state;
 }
 
-void UrRobot::testCircle(){
-	TRY_RTDE{
-		double velocity = 0.40;
-		double acceleration = 1.9;
-		double blend = 0.1;
-		std::vector<double> waypoint_1 = { -0.300, -0.300, 0.100, -2.695, 1.605, -0.036 };
-		std::vector<double> waypoint_2 = { -0.399, -0.199, 0.099, -2.694, 1.606, -0.037 };
-		std::vector<double> waypoint_3 = { -0.500, -0.299, 0.099, -2.695, 1.606, -0.038 };
-		std::vector<double> waypoint_4 = { -0.399, -0.400, 0.100, -2.695, 1.605, -0.038 };
-		std::vector<double> waypoint_5 = { -0.300, -0.300, 0.100, -2.696, 1.605, -0.036 };
-
-		// Move to init pose
-		rtde_control->moveL({ -0.300, -0.300, 0.100, -2.695, 1.605, -0.036 });
-
-		// Perform circular motion
-		for (unsigned int i = 0; i < 5; i++)
-		{
-			rtde_control->moveP(waypoint_1, velocity, acceleration, blend);
-			rtde_control->moveC(waypoint_2, waypoint_3, velocity, acceleration, blend);
-			rtde_control->moveC(waypoint_4, waypoint_5, velocity, acceleration, blend);
-		}
-		//rtde_control->stop;
-	}CATCH_RTDE{
-		ASSERT("RTDE is offline");
-	}
-}
-
 void UrRobot::setStandardDigitalOut(int pin, bool state){
 	TRY_RTDE rtde_io->setStandardDigitalOut(pin, state);
 }
@@ -88,9 +62,39 @@ void UrRobot::moveJ(std::vector<double> axis, double speed, double accel, int x1
 	TRY_RTDE rtde_control->moveJ({ axis[0], axis[1], axis[2], axis[3], axis[4], axis[5] }, speed, accel);
 }
 
-void UrRobot::moveL(std::vector<double> axis, double speed, double accel, int x1, int x2){
+void UrRobot::moveL(std::vector<double> axis, double speed, double accel){
 	TRY_RTDE rtde_control->moveL({ axis[0], axis[1], axis[2], axis[3], axis[4], axis[5] }, speed, accel);
 }
+
+void UrRobot::moveL(std::vector<double> axis, double speed, double accel, double blend, double extrusion, bool async) {
+	
+	if (async) {
+		std::vector<double> path;
+		path = axis;
+		path.push_back(speed);
+		path.push_back(accel);
+		path.push_back(blend);
+		path.push_back(extrusion);
+
+		pathBuffer.push_back(path);
+	}else {
+		std::vector<double> path;
+		path = axis;
+		path.push_back(speed);
+		path.push_back(accel);
+		path.push_back(blend);
+		path.push_back(extrusion);
+
+		pathBuffer.push_back(path);
+		TRY_RTDE rtde_control->moveL(pathBuffer);
+		pathBuffer.clear();
+	}
+}
+
+void UrRobot::moveP(std::vector<double>path) {
+	//TRY_RTDE rtde_control->movePath;
+}
+
 
 void UrRobot::servoC(std::vector<double> axis, double speed, double accel, int x1, int x2) {
 	TRY_RTDE rtde_control->servoC({ axis[0], axis[1], axis[2], axis[3], axis[4], axis[5] }, speed, accel);

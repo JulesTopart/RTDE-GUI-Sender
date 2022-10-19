@@ -142,13 +142,14 @@ bool Worker::executeLine(Operation op) {
 			}
 			else if (key == "moveJ") {
 				std::vector<double> axis = args[0].getDoubleArray().toStdVector();
+				
+				SharedData::log(line + op.getCommand() + "(...)");
 
 				double accel = args[1].getDouble();
 				double speed = args[2].getDouble();
 
-				SharedData::log(line + op.getCommand() + "(...)");
-
 				UrRobot::moveJ(axis, speed, accel);
+			
 				op.setEnded();
 				return true;
 			}
@@ -158,9 +159,59 @@ bool Worker::executeLine(Operation op) {
 				double accel = args[1].getDouble();
 				double speed = args[2].getDouble();
 
+				if (args.size() == 6) {
+					double blend = args[3].getDouble();
+					double extrusion = args[4].getDouble();
+					int async = args[5].getInteger();
+
+					SharedData::log(line + op.getCommand() + "("
+						+ QString::number(axis[0]) + ", "
+						+ QString::number(axis[1]) + ", "
+						+ QString::number(axis[2]) + ", "
+						+ QString::number(axis[3]) + ", "
+						+ QString::number(axis[4]) + ", "
+						+ QString::number(axis[5]) + ", "
+						+ QString::number(accel) + ", "
+						+ QString::number(speed) + ", "
+						+ QString::number(blend) + ", "
+						+ QString::number(extrusion) + ", "
+						+ QString::number(async == 1) + ")"
+					);
+
+					UrRobot::moveL(axis, speed, accel, blend, extrusion, async == 1);
+				}
+				else {
+					SharedData::log(line + op.getCommand() + "("
+						+ QString::number(axis[0]) + ", "
+						+ QString::number(axis[1]) + ", "
+						+ QString::number(axis[2]) + ", "
+						+ QString::number(axis[3]) + ", "
+						+ QString::number(axis[4]) + ", "
+						+ QString::number(axis[5]) + ", "
+						+ QString::number(accel) + ", "
+						+ QString::number(speed) + ")"
+					);
+					UrRobot::moveL(axis, speed, accel);
+				}
+
+				op.setEnded();
+				return true;
+			}
+			else if (key == "moveP") {
+				std::vector<double> path = args[0].getDoubleArray().toStdVector();
 				SharedData::log(line + op.getCommand() + "(...)");
 
-				UrRobot::moveL(axis, speed, accel);
+				double accel = args[1].getDouble();
+				double speed = args[2].getDouble();
+				double blend = args[3].getDouble();
+
+				path.push_back(accel);
+				path.push_back(speed);
+				path.push_back(blend);
+				
+				UrRobot::moveP(path);
+				
+
 				op.setEnded();
 				return true;
 			}

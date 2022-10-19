@@ -48,6 +48,8 @@ void MainWindow::connectSignal() {
     connect(ui.buttonConnect_rtde, &QPushButton::pressed, this, &MainWindow::buttonConnectRTDEPressed);
     connect(ui.buttonSend_rtde, &QPushButton::pressed, this, &MainWindow::buttonSendRTDEPressed);
 
+    connect(ui.comboBoxCmd_rtde->lineEdit(), &QLineEdit::editingFinished, this, &MainWindow::buttonSendRTDEPressed);
+
     connect(ui.buttonConnect_temp, &QPushButton::pressed, this, &MainWindow::buttonConnectTemperaturePressed);
     connect(ui.buttonSend_temp, &QPushButton::pressed, this, &MainWindow::buttonSendTemperaturePressed);
 
@@ -226,6 +228,18 @@ void MainWindow::actionRunTriggered() {
 
 void MainWindow::actionPauseTriggered() {
     program.pause();
+    
+    //Console::log("Connecting to dashboard...");
+    //DashboardClient dash(currentRTDEIP.toStdString());
+    //dash.connect();
+
+    //if (dash.isConnected()) {
+    //    Console::log("Connected. Sending : " + ui.comboBoxCmd_rtde->currentText(), "Dashboard");
+    //    dash.send("pause");
+    //}
+    //else
+    //    Console::log("Connection failed", "Dashboard");
+
 
     if (UrRobot::isConnected()) {
         UrRobot::setAnalogOutputVoltage(0, 0);
@@ -263,6 +277,11 @@ void MainWindow::actionOpenTriggered() {
         tr("Open Script"), "%HOMEPATH%", tr("Scripts (*.urscript *.txt)"));
 
     if (filePath == "") return;
+
+    script.clear();
+    chunks.clear();
+    ui.scriptText->clear();
+
     LoadingMsg msgBox(this);
     msgBox.setLabel("Reading program...");
     msgBox.show();
